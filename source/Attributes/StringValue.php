@@ -10,22 +10,7 @@ class StringValue implements ValueObjectInterface, StringableInterface
 {
     protected string $value;
 
-    public function __construct(string $value)
-    {
-        $this->setValue($value);
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
-    }
-
-    public function getValue(): string
-    {
-        return $this->value;
-    }
-
-    public function setValue(string $value): self
+    protected function __construct(string $value)
     {
         if (($length = strlen($value)) > 65_535) {
             throw new InvalidAttributeValueException(sprintf(
@@ -36,17 +21,32 @@ class StringValue implements ValueObjectInterface, StringableInterface
         }
 
         $this->value = $value;
-
-        return $this;
     }
 
-    public function getLength(): int
+    /**
+     * @param string $value
+     *
+     * @return static
+     *
+     * @throws InvalidAttributeValueException
+     */
+    public static function create(string $value): self
     {
-        return strlen($this->value);
+        return new self($value);
     }
 
     public function isEmpty(): bool
     {
-        return '' === $this->value;
+        return $this->getValue() === '';
+    }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
     }
 }

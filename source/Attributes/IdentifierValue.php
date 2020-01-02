@@ -11,7 +11,7 @@ class IdentifierValue implements ValueObjectInterface, IdentifierInterface, Stri
 {
     protected string $value;
 
-    public function __construct(string $value)
+    protected function __construct(string $value)
     {
         if (($length = strlen($value)) === 0 || $length > 100) {
             throw new InvalidAttributeValueException(sprintf(
@@ -24,9 +24,21 @@ class IdentifierValue implements ValueObjectInterface, IdentifierInterface, Stri
         $this->value = $value;
     }
 
+    /**
+     * @param string $value
+     *
+     * @return static
+     *
+     * @throws InvalidAttributeValueException
+     */
+    public static function create(string $value): self
+    {
+        return new self($value);
+    }
+
     public function __toString(): string
     {
-        return $this->value;
+        return $this->getValue();
     }
 
     public function getValue(): string

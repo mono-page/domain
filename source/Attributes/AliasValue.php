@@ -10,22 +10,19 @@ class AliasValue implements ValueObjectInterface, StringableInterface
 {
     protected string $value;
 
-    public function __construct(string $value)
+    protected function __construct(string $value)
     {
-        $this->setValue($value);
+        $this->value = $value;
     }
 
-    public function __toString(): string
-    {
-        return $this->value;
-    }
-
-    public function getValue(): string
-    {
-        return $this->value;
-    }
-
-    public function setValue(string $value): self
+    /**
+     * @param string $value
+     *
+     * @return static
+     *
+     * @throws InvalidAttributeValueException
+     */
+    public static function create(string $value): self
     {
         if (($length = strlen($value)) === 0 || $length > 100) {
             throw new InvalidAttributeValueException(sprintf(
@@ -34,19 +31,24 @@ class AliasValue implements ValueObjectInterface, StringableInterface
                 $length
             ));
         }
-        if (preg_match('/[^\W]/', $value) > 0) {
+
+        if (preg_match('/[^a-z0-9_]+/', $value) > 0) {
             throw new InvalidAttributeValueException(sprintf(
                 'Attribute "%s" can only consist of valid characters: a-z, A-Z, 0-9, _',
                 self::class
             ));
         }
-        $this->value = $value;
 
-        return $this;
+        return new self($value);
     }
 
-    public function getLength(): int
+    public function __toString(): string
     {
-        return strlen($this->value);
+        return $this->getValue();
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
     }
 }

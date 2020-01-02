@@ -11,7 +11,7 @@ class UUIDValue implements ValueObjectInterface, StringableInterface, Identifier
 {
     protected string $value;
 
-    public function __construct(string $value)
+    protected function __construct(string $value)
     {
         if (!preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/', $value)) {
             throw new InvalidAttributeValueException(sprintf(
@@ -23,9 +23,21 @@ class UUIDValue implements ValueObjectInterface, StringableInterface, Identifier
         $this->value = $value;
     }
 
+    /**
+     * @param string $value
+     *
+     * @return static
+     *
+     * @throws InvalidAttributeValueException
+     */
+    public static function create(string $value): self
+    {
+        return new self($value);
+    }
+
     public function __toString(): string
     {
-        return $this->value;
+        return $this->getValue();
     }
 
     public function getValue(): string
