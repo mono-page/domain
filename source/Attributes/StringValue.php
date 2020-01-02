@@ -40,13 +40,13 @@ class StringValue implements ValueObjectInterface, StringableInterface
         return $this->getValue() === '';
     }
 
-    public function __toString(): string
-    {
-        return $this->getValue();
-    }
-
     public function getValue(): string
     {
         return $this->value;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
     }
 }

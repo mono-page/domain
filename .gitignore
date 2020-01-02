@@ -2,4 +2,4 @@
 composer.lock
 docs
 vendor
-coverage
+phpunit.xml
