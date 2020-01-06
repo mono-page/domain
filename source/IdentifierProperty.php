@@ -6,6 +6,7 @@ use Monopage\Contracts\IdentifierInterface;
 use Monopage\Contracts\StringableInterface;
 use Monopage\Contracts\ValueObjectInterface;
 use Monopage\Properties\Exceptions\PropertyValidationException;
+use Monopage\Properties\Validation\Result;
 
 class IdentifierProperty implements ValueObjectInterface, IdentifierInterface, StringableInterface
 {
@@ -13,15 +14,17 @@ class IdentifierProperty implements ValueObjectInterface, IdentifierInterface, S
 
     protected function __construct(string $value)
     {
-        if (($length = strlen($value)) === 0 || $length > 100) {
-            throw new PropertyValidationException(sprintf(
-                'Property "%s" can contain a value between 1 and 100 characters. Now length %d',
-                self::class,
-                $length
-            ));
-        }
-
         $this->value = $value;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
     }
 
     /**
@@ -33,16 +36,24 @@ class IdentifierProperty implements ValueObjectInterface, IdentifierInterface, S
      */
     public static function create(string $value): self
     {
+        $validation = self::validate($value);
+        if (!$validation->isSuccess()) {
+            throw new PropertyValidationException($validation->getMessage());
+        }
+
         return new self($value);
     }
 
-    public function __toString(): string
+    public static function validate(string $value): Result
     {
-        return $this->getValue();
-    }
+        if (($length = strlen($value)) === 0 || $length > 100) {
+            return Result::failure(sprintf(
+                'Property "%s" can contain a value between 1 and 100 characters. Now length %d',
+                self::class,
+                $length
+            ));
+        }
 
-    public function getValue(): string
-    {
-        return $this->value;
+        return Result::success();
     }
 }

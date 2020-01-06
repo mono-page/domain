@@ -35,6 +35,11 @@ class LocalePropertyTest extends TestCase
         $this->assertEquals('ru-RU', (string)LocaleProperty::create('ru', 'RU'));
     }
 
+    public function testStringShort(): void
+    {
+        $this->assertEquals('ru', (string)LocaleProperty::create('ru'));
+    }
+
     public function testLanguage(): void
     {
         $this->assertEquals('ru', LocaleProperty::create('ru', 'RU')->getLanguageSegment());

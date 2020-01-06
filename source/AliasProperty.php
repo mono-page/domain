@@ -5,6 +5,7 @@ namespace Monopage\Properties;
 use Monopage\Contracts\StringableInterface;
 use Monopage\Contracts\ValueObjectInterface;
 use Monopage\Properties\Exceptions\PropertyValidationException;
+use Monopage\Properties\Validation\Result;
 
 class AliasProperty implements ValueObjectInterface, StringableInterface
 {
@@ -13,6 +14,16 @@ class AliasProperty implements ValueObjectInterface, StringableInterface
     protected function __construct(string $value)
     {
         $this->value = $value;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
     }
 
     /**
@@ -24,8 +35,18 @@ class AliasProperty implements ValueObjectInterface, StringableInterface
      */
     public static function create(string $value): self
     {
+        $validation = self::validate($value);
+        if (!$validation->isSuccess()) {
+            throw new PropertyValidationException($validation->getMessage());
+        }
+
+        return new self($value);
+    }
+
+    public static function validate(string $value): Result
+    {
         if (($length = strlen($value)) === 0 || $length > 100) {
-            throw new PropertyValidationException(sprintf(
+            return Result::failure(sprintf(
                 'Property "%s" can contain a value between 1 and 100 characters. Now length: %d',
                 self::class,
                 $length
@@ -33,22 +54,12 @@ class AliasProperty implements ValueObjectInterface, StringableInterface
         }
 
         if (preg_match('/[^a-z0-9_]+/', $value) > 0) {
-            throw new PropertyValidationException(sprintf(
+            return Result::failure(sprintf(
                 'Property "%s" can only consist of valid characters: a-z, A-Z, 0-9, _',
                 self::class
             ));
         }
 
-        return new self($value);
-    }
-
-    public function __toString(): string
-    {
-        return $this->getValue();
-    }
-
-    public function getValue(): string
-    {
-        return $this->value;
+        return Result::success();
     }
 }

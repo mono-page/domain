@@ -6,6 +6,7 @@ use Monopage\Contracts\IdentifierInterface;
 use Monopage\Contracts\StringableInterface;
 use Monopage\Contracts\ValueObjectInterface;
 use Monopage\Properties\Exceptions\PropertyValidationException;
+use Monopage\Properties\Validation\Result;
 
 class UuidProperty implements ValueObjectInterface, StringableInterface, IdentifierInterface
 {
@@ -13,14 +14,17 @@ class UuidProperty implements ValueObjectInterface, StringableInterface, Identif
 
     protected function __construct(string $value)
     {
-        if (!preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i', $value)) {
-            throw new PropertyValidationException(sprintf(
-                'Property "%s" can only consist of valid UUID characters',
-                self::class
-            ));
-        }
-
         $this->value = $value;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
     }
 
     /**
@@ -32,16 +36,23 @@ class UuidProperty implements ValueObjectInterface, StringableInterface, Identif
      */
     public static function create(string $value): self
     {
+        $validation = self::validate($value);
+        if (!$validation->isSuccess()) {
+            throw new PropertyValidationException($validation->getMessage());
+        }
+
         return new self($value);
     }
 
-    public function __toString(): string
+    public static function validate(string $value): Result
     {
-        return $this->getValue();
-    }
+        if (!preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i', $value)) {
+            return Result::failure(sprintf(
+                'Property "%s" can only consist of valid UUID characters',
+                self::class
+            ));
+        }
 
-    public function getValue(): string
-    {
-        return $this->value;
+        return Result::success();
     }
 }

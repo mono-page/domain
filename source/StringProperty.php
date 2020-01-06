@@ -5,6 +5,7 @@ namespace Monopage\Properties;
 use Monopage\Contracts\StringableInterface;
 use Monopage\Contracts\ValueObjectInterface;
 use Monopage\Properties\Exceptions\PropertyValidationException;
+use Monopage\Properties\Validation\Result;
 
 class StringProperty implements ValueObjectInterface, StringableInterface
 {
@@ -12,15 +13,22 @@ class StringProperty implements ValueObjectInterface, StringableInterface
 
     protected function __construct(string $value)
     {
-        if (($length = strlen($value)) > 65_535) {
-            throw new PropertyValidationException(sprintf(
-                'Property "%s" can contain a value between 0 and 65535 characters. Now length: %d',
-                self::class,
-                $length
-            ));
-        }
-
         $this->value = $value;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->getValue() === '';
+    }
+
+    public function __toString(): string
+    {
+        return $this->getValue();
     }
 
     /**
@@ -32,21 +40,24 @@ class StringProperty implements ValueObjectInterface, StringableInterface
      */
     public static function create(string $value): self
     {
+        $validation = self::validate($value);
+        if (!$validation->isSuccess()) {
+            throw new PropertyValidationException($validation->getMessage());
+        }
+
         return new self($value);
     }
 
-    public function isEmpty(): bool
+    public static function validate(string $value): Result
     {
-        return $this->getValue() === '';
-    }
+        if (($length = strlen($value)) > 65_535) {
+            return Result::failure(sprintf(
+                'Property "%s" can contain a value between 0 and 65535 characters. Now length: %d',
+                self::class,
+                $length
+            ));
+        }
 
-    public function getValue(): string
-    {
-        return $this->value;
-    }
-
-    public function __toString(): string
-    {
-        return $this->getValue();
+        return Result::success();
     }
 }
