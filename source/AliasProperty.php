@@ -53,7 +53,7 @@ class AliasProperty implements ValueObjectInterface, StringableInterface
             ));
         }
 
-        if (preg_match('/[^a-z0-9_]+/', $value) > 0) {
+        if (preg_match('/[^a-z0-9_]+/i', $value) > 0) {
             return Result::failure(sprintf(
                 'Property "%s" can only consist of valid characters: a-z, A-Z, 0-9, _',
                 self::class
