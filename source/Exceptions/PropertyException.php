@@ -2,9 +2,8 @@
 
 namespace Monopage\Properties\Exceptions;
 
-use LogicException;
-use Monopage\Contracts\ExceptionInterface;
+use Monopage\Contracts\Exceptions\DomainException;
 
-class PropertyException extends LogicException implements ExceptionInterface
+class PropertyException extends DomainException
 {
 }
