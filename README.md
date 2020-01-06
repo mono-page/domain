@@ -1,1 +1,1 @@
-# Monopage/Domain
+# Monopage/Properties

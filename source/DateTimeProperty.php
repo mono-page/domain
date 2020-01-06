@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Monopage\Domain\Attributes;
+namespace Monopage\Properties;
 
 use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
 use Monopage\Contracts\StringableInterface;
 use Monopage\Contracts\ValueObjectInterface;
-use Monopage\Domain\Attributes\Exceptions\InvalidAttributeValueException;
+use Monopage\Properties\Exceptions\PropertyValidationException;
 
-class DateTimeValue extends DateTimeImmutable implements ValueObjectInterface, StringableInterface
+class DateTimeProperty extends DateTimeImmutable implements ValueObjectInterface, StringableInterface
 {
     protected function __construct(string $time = 'now', DateTimeZone $timezone = null)
     {
@@ -22,7 +22,7 @@ class DateTimeValue extends DateTimeImmutable implements ValueObjectInterface, S
      *
      * @return static
      *
-     * @throws InvalidAttributeValueException
+     * @throws PropertyValidationException
      */
     public static function create(string $value, string $format = 'Y-m-d H:i:s'): self
     {
@@ -31,7 +31,7 @@ class DateTimeValue extends DateTimeImmutable implements ValueObjectInterface, S
         try {
             return new self($value);
         } catch (Exception $e) {
-            throw new InvalidAttributeValueException('Wrong value');
+            throw new PropertyValidationException('Wrong value');
         }
     }
 

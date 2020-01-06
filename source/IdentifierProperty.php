@@ -1,22 +1,23 @@
 <?php declare(strict_types=1);
 
-namespace Monopage\Domain\Attributes;
+namespace Monopage\Properties;
 
 use Monopage\Contracts\IdentifierInterface;
 use Monopage\Contracts\StringableInterface;
 use Monopage\Contracts\ValueObjectInterface;
-use Monopage\Domain\Attributes\Exceptions\InvalidAttributeValueException;
+use Monopage\Properties\Exceptions\PropertyValidationException;
 
-class UUIDValue implements ValueObjectInterface, StringableInterface, IdentifierInterface
+class IdentifierProperty implements ValueObjectInterface, IdentifierInterface, StringableInterface
 {
     protected string $value;
 
     protected function __construct(string $value)
     {
-        if (!preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/', $value)) {
-            throw new InvalidAttributeValueException(sprintf(
-                'Attribute "%s" can only consist of valid uppercase UUID characters',
-                self::class
+        if (($length = strlen($value)) === 0 || $length > 100) {
+            throw new PropertyValidationException(sprintf(
+                'Property "%s" can contain a value between 1 and 100 characters. Now length %d',
+                self::class,
+                $length
             ));
         }
 
@@ -28,7 +29,7 @@ class UUIDValue implements ValueObjectInterface, StringableInterface, Identifier
      *
      * @return static
      *
-     * @throws InvalidAttributeValueException
+     * @throws PropertyValidationException
      */
     public static function create(string $value): self
     {

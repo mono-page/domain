@@ -1,8 +1,8 @@
 {
-    "name": "mono-page/domain",
+    "name": "mono-page/properties",
     "description": "",
     "keywords": [],
-    "homepage": "https://github.com/mono-page/domain",
+    "homepage": "https://github.com/mono-page/properties",
     "type": "library",
     "authors": [],
     "require": {
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Monopage\\Domain\\": "source"
+            "Monopage\\Properties\\": "source"
         }
     },
     "config": {
