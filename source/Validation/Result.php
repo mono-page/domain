@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Monopage\Properties;
+namespace Monopage\Properties\Validation;
 
-class Validation
+class Result
 {
     protected bool $success;
     protected string $message;
