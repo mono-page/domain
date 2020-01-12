@@ -30,7 +30,7 @@
     "repositories": [
         {
             "type": "git",
-            "url": "/home/iiifx/MonoPage/contracts"
+            "url": "https://github.com/mono-page/contracts"
         }
     ]
 }
