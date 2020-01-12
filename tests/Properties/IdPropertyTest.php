@@ -1,25 +1,25 @@
 <?php declare(strict_types=1);
 
 use Monopage\Properties\Exceptions\PropertyValidationException;
-use Monopage\Properties\IdentifierProperty;
+use Monopage\Properties\IdProperty;
 use PHPUnit\Framework\TestCase;
 
-class IdentifierPropertyTest extends TestCase
+class IdPropertyTest extends TestCase
 {
     public function testEmpty(): void
     {
         $this->expectException(PropertyValidationException::class);
-        IdentifierProperty::create('');
+        IdProperty::create('');
     }
 
     public function testToLong(): void
     {
         $this->expectException(PropertyValidationException::class);
-        IdentifierProperty::create(str_repeat('x', 101));
+        IdProperty::create(str_repeat('x', 101));
     }
 
     public function testString(): void
     {
-        $this->assertEquals('example', (string)IdentifierProperty::create('example'));
+        $this->assertEquals('example', (string)IdProperty::create('example'));
     }
 }

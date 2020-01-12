@@ -8,7 +8,7 @@ use Monopage\Contracts\ValueObjectInterface;
 use Monopage\Properties\Exceptions\PropertyValidationException;
 use Monopage\Properties\Validation\Result;
 
-class IdentifierProperty implements ValueObjectInterface, IdentifierInterface, StringableInterface
+class IdProperty implements ValueObjectInterface, IdentifierInterface, StringableInterface
 {
     protected string $value;
 
